@@ -1,7 +1,7 @@
 {
-    "name": "bamboo esm dev server",
+    "name": "bamboo",
     "version": "1.0.0",
-    "description": "Simple dev server",
+    "description": "Simple esm dev server",
     "main": "dist/index.js",
     "scripts": {
         "start": "nodemon --exec npm run dev -e ts",
