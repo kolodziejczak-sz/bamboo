@@ -1,8 +1,10 @@
 import { transformBabel } from './babel';
 import { transformEsImports } from './esImports';
+import { transformHtmlScriptImports } from './typeModule';
 
 const transforms = [
     { test: /\.(ts|js|tsx|jsx)$/, use: [transformBabel, transformEsImports] },
+    { test: /\.(htm|html)$/, use: [transformHtmlScriptImports] },
 ];
 
 export const runTransforms = async (
