@@ -1,7 +1,7 @@
 import builtinModules from 'builtin-modules';
 import { build } from './esbuild';
 import { getConfig } from './config';
-import { pathCombine, parsePackageJson } from './utils';
+import { pathResolve, parsePackageJson } from './utils';
 import { cache } from './cache';
 
 const dependenciesPath = 'bundled_node_modules';
@@ -35,7 +35,7 @@ export const createDependencyPath = (depName: string) =>
 export const getDependencies = () => {
     if (!dependencies) {
         const { cwd } = getConfig();
-        const packagePath = pathCombine(cwd, packageJsonFilename);
+        const packagePath = pathResolve(cwd, packageJsonFilename);
         dependencies = parsePackageJsonForDependencies(packagePath);
     }
     return dependencies;
@@ -44,15 +44,15 @@ export const getDependencies = () => {
 export const buildDependencies = async () => {
     const { dependencies, builtinModules } = getDependencies();
     const { cwd } = getConfig();
-    const nodeModulesPath = pathCombine(cwd, nodeModulesDirName);
+    const nodeModulesPath = pathResolve(cwd, nodeModulesDirName);
 
     for (let depName of dependencies) {
-        const depPath = pathCombine(nodeModulesPath, depName);
-        const depPackagePath = pathCombine(depPath, packageJsonFilename);
+        const depPath = pathResolve(nodeModulesPath, depName);
+        const depPackagePath = pathResolve(depPath, packageJsonFilename);
         const { main = defaultEntryFilename } = parsePackageJson(
             depPackagePath
         );
-        const depEntry = pathCombine(depPath, main);
+        const depEntry = pathResolve(depPath, main);
 
         try {
             const { outputFiles } = await build({

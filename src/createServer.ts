@@ -4,7 +4,7 @@ import { getConfig } from './config';
 import { runTransforms } from './transforms';
 import {
     pathExists,
-    pathCombine,
+    pathResolve,
     pathExtension,
     getMimeType,
     readFileAsText,
@@ -41,7 +41,7 @@ export const createServer = () =>
         }
 
         const { entryDir } = getConfig();
-        const fileFullPath = pathCombine(entryDir, fileRelativePath);
+        const fileFullPath = pathResolve(entryDir, fileRelativePath);
         const fileExists = pathExists(fileFullPath);
 
         if (!fileExists) {

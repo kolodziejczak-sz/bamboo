@@ -2,7 +2,7 @@ import pathModule from 'path';
 import mime from 'mime-types';
 import fs from 'fs-extra';
 
-export const scriptExtensions = ['.tsx, .ts, .js, .jsx'];
+export const scriptExtensions = ['.tsx', '.ts', '.js', '.jsx'];
 
 export const getMimeType = (ext: string) => {
     if (scriptExtensions.includes(ext)) {
@@ -16,7 +16,7 @@ export const readFileAsText = async (path: string) =>
 
 export const parsePackageJson = (path: string) => require(path);
 
-export const pathCombine = (...paths: string[]) => pathModule.resolve(...paths);
+export const pathResolve = (...paths: string[]) => pathModule.resolve(...paths);
 
 export const pathRelative = (from: string, to: string) =>
     pathModule.relative(from, to);
