@@ -1,14 +1,11 @@
-import { setConfig } from './config';
-import { pathCombine } from './utils';
+import { pathResolve } from './utils';
 import { start } from './index';
 
 export function cli(args: string[]) {
     const cwd = process.cwd();
 
-    setConfig({
+    start({
         cwd,
-        entryDir: pathCombine(cwd, 'src'),
+        entryDir: pathResolve(cwd, 'src'),
     });
-
-    start();
 }

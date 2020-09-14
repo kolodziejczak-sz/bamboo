@@ -1,8 +1,10 @@
 import { buildDependencies } from './dependencies';
 import { createServer } from './createServer';
-import { getConfig } from './config';
+import { getConfig, setConfig } from './config';
 
-export const start = () => {
+export const start = (configDraft) => {
+    setConfig(configDraft);
+
     const { port } = getConfig();
     const httpServer = createServer();
 
