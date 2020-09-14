@@ -3,7 +3,7 @@ import { getConfig } from '../config';
 import {
     pathExists,
     pathExtension,
-    pathCombine,
+    pathResolve,
     pathRelative,
     scriptExtensions,
 } from '../utils';
@@ -24,12 +24,15 @@ const resolveImportPath = (sourceFilePath: string, importPath: string) => {
 
     const { dependencies } = getDependencies();
     if (dependencies.includes(importPath)) {
-        const entryDir = pathRelative(sourceFilePath, './');
-        return `${entryDir}/${createDependencyPath(importPath)}`;
+        const depPath = createDependencyPath(importPath);
+        const sourceDir = pathResolve(sourceFilePath, '..');
+        const newImportPath = pathRelative(sourceDir, depPath);
+
+        return `./${newImportPath.replace(/\\/gi, '/')}`;
     }
 
     const { entryDir } = getConfig();
-    const fullPathWithoutExt = pathCombine(
+    const fullPathWithoutExt = pathResolve(
         entryDir,
         sourceFilePath,
         importPath
