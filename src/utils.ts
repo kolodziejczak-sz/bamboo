@@ -1,6 +1,7 @@
 import pathModule from 'path';
 import mime from 'mime-types';
 import fs from 'fs-extra';
+import slash from 'slash';
 
 export const scriptExtensions = ['.tsx', '.ts', '.js', '.jsx'];
 
@@ -16,10 +17,14 @@ export const readFileAsText = async (path: string) =>
 
 export const parsePackageJson = (path: string) => require(path);
 
-export const pathResolve = (...paths: string[]) => pathModule.resolve(...paths);
+export const pathResolve = (...paths: string[]) =>
+    slash(pathModule.resolve(...paths));
+
+export const pathJoin = (...paths: string[]) =>
+    slash(pathModule.join(...paths));
 
 export const pathRelative = (from: string, to: string) =>
-    pathModule.relative(from, to);
+    `./${slash(pathModule.relative(from, to))}`;
 
 export const pathExists = (path: string) => fs.existsSync(path);
 
