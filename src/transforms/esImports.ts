@@ -3,15 +3,29 @@ import { getConfig } from '../config';
 import {
     pathExists,
     pathExtension,
-    pathResolve,
     pathRelative,
+    pathJoin,
     scriptExtensions,
 } from '../utils';
 
-const resolveScriptExtension = (fullPathWithoutExt: string) => {
+const resolveScriptPath = (
+    relativeSourceDirPath: string,
+    importPath: string
+) => {
+    const { entryDir } = getConfig();
+    const fullPathWithoutExt = pathJoin(
+        entryDir,
+        relativeSourceDirPath,
+        importPath
+    );
+    const isDir = pathExists(fullPathWithoutExt);
+    const createPathDraft = (ext: string, base: string = fullPathWithoutExt) =>
+        `${base}${isDir ? '/index' : ''}${ext}`;
+
     for (let ext of scriptExtensions) {
-        if (pathExists(`${fullPathWithoutExt}${ext}`)) {
-            return ext;
+        const filePathDraft = createPathDraft(ext);
+        if (pathExists(filePathDraft)) {
+            return createPathDraft(ext, importPath);
         }
     }
 };
@@ -22,29 +36,18 @@ const resolveImportPath = (sourceFilePath: string, importPath: string) => {
         return importPath;
     }
 
+    const sourceDirPath = pathJoin(sourceFilePath, '..');
     const { dependencies } = getDependencies();
-    if (dependencies.includes(importPath)) {
+    const isDependencyImport = dependencies.includes(importPath);
+    if (isDependencyImport) {
         const depPath = createDependencyPath(importPath);
-        const sourceDir = pathResolve(sourceFilePath, '..');
-        const newImportPath = pathRelative(sourceDir, depPath);
+        const newImportPath = pathRelative(sourceDirPath, depPath);
 
-        return `./${newImportPath.replace(/\\/gi, '/')}`;
+        return newImportPath;
     }
 
-    const { entryDir } = getConfig();
-    const fullPathWithoutExt = pathResolve(
-        entryDir,
-        sourceFilePath,
-        importPath
-    );
-    const sourceFileExt = pathExtension(sourceFilePath);
-    const scriptExt =
-        resolveScriptExtension(fullPathWithoutExt) || sourceFileExt;
-    const isDir = pathExists(fullPathWithoutExt);
-
-    return isDir
-        ? `${importPath}/index${scriptExt}`
-        : `${importPath}${scriptExt}`;
+    const newImportPath = resolveScriptPath(sourceDirPath, importPath);
+    return newImportPath;
 };
 
 const parseStaticImports = async (sourceFilePath, textContent) => {
