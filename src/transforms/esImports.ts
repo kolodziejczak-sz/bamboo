@@ -19,13 +19,13 @@ const resolveScriptPath = (
         importPath
     );
     const isDir = pathExists(fullPathWithoutExt);
-    const createPathDraft = (ext: string, base: string = fullPathWithoutExt) =>
+    const createPathDraft = (base: string, ext: string) =>
         `${base}${isDir ? '/index' : ''}${ext}`;
 
     for (let ext of scriptExtensions) {
-        const filePathDraft = createPathDraft(ext);
+        const filePathDraft = createPathDraft(fullPathWithoutExt, ext);
         if (pathExists(filePathDraft)) {
-            return createPathDraft(ext, importPath);
+            return createPathDraft(importPath, ext);
         }
     }
 };
