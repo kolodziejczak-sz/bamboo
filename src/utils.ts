@@ -2,6 +2,7 @@ import pathModule from 'path';
 import mime from 'mime-types';
 import fs from 'fs-extra';
 import slash from 'slash';
+import exitHook from 'exit-hook';
 
 export const scriptExtensions = ['.tsx', '.ts', '.js', '.jsx'];
 
@@ -29,3 +30,8 @@ export const pathRelative = (from: string, to: string) =>
 export const pathExists = (path: string) => fs.existsSync(path);
 
 export const pathExtension = (path: string) => pathModule.extname(path);
+
+export const appendToString = (text: string, subText: string, index: number) =>
+    text.slice(0, index) + subText + text.slice(index);
+
+export const onDestroy = (op: () => void) => exitHook(op);
