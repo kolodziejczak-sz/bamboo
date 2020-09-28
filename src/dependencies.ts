@@ -1,5 +1,5 @@
 import builtinModules from 'builtin-modules';
-import { build } from './esbuild';
+import { build } from './esbuildService';
 import { getConfig } from './config';
 import { pathResolve, parsePackageJson } from './utils';
 import { cache } from './cache';

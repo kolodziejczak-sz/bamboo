@@ -1,4 +1,4 @@
-import { transform, Loader } from '../esbuild';
+import { transform, Loader } from '../esbuildService';
 import { pathExtension } from '../utils';
 
 export const transformBabel = async (
