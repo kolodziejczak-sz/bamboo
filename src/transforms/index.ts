@@ -1,10 +1,14 @@
 import { transformBabel } from './babel';
 import { transformEsImports } from './esImports';
 import { transformHtmlScriptImports } from './typeModule';
+import { injectReloadScript } from './reload';
 
 const transforms = [
     { test: /\.(ts|js|tsx|jsx)$/, use: [transformBabel, transformEsImports] },
-    { test: /\.(htm|html)$/, use: [transformHtmlScriptImports] },
+    {
+        test: /\.(html?)$/,
+        use: [transformHtmlScriptImports, injectReloadScript],
+    },
 ];
 
 export const runTransforms = async (
