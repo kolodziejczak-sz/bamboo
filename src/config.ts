@@ -20,8 +20,8 @@ export const setConfig = (update: Partial<typeof config>) => {
     };
 };
 
-export const getRelativePath = (path: string) =>
-    pathRelative(config.entryDirPath, path).slice(2 /* remove ./ */);
-
 export const getDependencyPath = (depName: string) =>
     `${config.dependenciesPath}/${depName}.js`;
+
+export const getRelativePath = (path: string) =>
+    pathRelative(config.entryDirPath, path).slice(2 /* remove ./ */);

@@ -1,6 +1,5 @@
 import { startService, Service, TransformOptions, BuildOptions } from 'esbuild';
 import { onDestroy } from './utils';
-export { Loader } from 'esbuild';
 
 let servicePromise: Promise<Service> | undefined;
 
@@ -19,14 +18,14 @@ const stopService = async () => {
     }
 };
 
-export const transform = async (input: string, options: TransformOptions) => {
-    const service = await ensureService();
-    return await service.transform(input, options);
-};
-
 export const build = async (options: BuildOptions) => {
     const service = await ensureService();
     return await service.build(options);
+};
+
+export const transform = async (input: string, options: TransformOptions) => {
+    const service = await ensureService();
+    return await service.transform(input, options);
 };
 
 onDestroy(stopService);
