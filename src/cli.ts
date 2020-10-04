@@ -1,11 +1,13 @@
-import { pathResolve } from './utils';
+import { pathResolve, getCwdPath } from './utils';
 import { start } from './index';
 
 export function cli(args: string[]) {
-    const cwd = process.cwd();
+    const cwdPath = getCwdPath();
+
+    // TODO: handle more options
 
     start({
-        cwd,
-        entryDir: pathResolve(cwd, 'src'),
+        cwdPath: cwdPath,
+        entryDirPath: pathResolve(cwdPath, 'src'),
     });
 }
