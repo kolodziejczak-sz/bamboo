@@ -1,8 +1,13 @@
 {
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
-        "module": "ESNext",
+        "module": "CommonJS",
+        "target": "ES5",
+        "lib": ["ESNext", "dom"],
+        "esModuleInterop": true,
         "moduleResolution": "node",
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "outDir": "dist",
+        "rootDir": "src"
     }
 }
