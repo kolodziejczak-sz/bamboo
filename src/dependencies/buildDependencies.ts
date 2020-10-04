@@ -1,6 +1,7 @@
 import { cache } from '../cache';
 import { getConfig, getDependencyPath } from '../config';
 import { PACKAGE_JSON, NODE_MODULES, DEFAULT_SCRIPT_FILE } from '../constants';
+import { logError } from '../logger';
 import { pathJoin, parsePackageJson } from '../utils';
 import { getDependencies, getBuiltInModules } from './dependencies';
 import { build } from '../esbuild';
@@ -47,7 +48,7 @@ export const buildDependencies = async () => {
             const cacheKey = getDependencyPath(depName);
             cache.set(cacheKey, stringifiedDependency);
         } catch (error) {
-            console.log(`Failed to build dependency ${depName}: ${error}`);
+            logError(`Failed to build dependency ${depName}: ${error}`);
         }
     }
 };
