@@ -1,5 +1,5 @@
-import { getDependencies, createDependencyPath } from '../dependencies';
-import { getConfig } from '../config';
+import { isDependency } from '../dependencies';
+import { getConfig, getDependencyPath } from '../config';
 import {
     pathExists,
     pathExtension,
@@ -12,9 +12,9 @@ const resolveScriptPath = (
     relativeSourceDirPath: string,
     importPath: string
 ) => {
-    const { entryDir } = getConfig();
+    const { entryDirPath } = getConfig();
     const fullPathWithoutExt = pathJoin(
-        entryDir,
+        entryDirPath,
         relativeSourceDirPath,
         importPath
     );
@@ -37,10 +37,9 @@ const resolveImportPath = (sourceFilePath: string, importPath: string) => {
     }
 
     const sourceDirPath = pathJoin(sourceFilePath, '..');
-    const { dependencies } = getDependencies();
-    const isDependencyImport = dependencies.includes(importPath);
+    const isDependencyImport = isDependency(importPath);
     if (isDependencyImport) {
-        const depPath = createDependencyPath(importPath);
+        const depPath = getDependencyPath(importPath);
         const newImportPath = pathRelative(sourceDirPath, depPath);
 
         return newImportPath;

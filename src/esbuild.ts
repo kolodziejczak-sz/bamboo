@@ -11,7 +11,7 @@ const ensureService = async () => {
     return servicePromise;
 };
 
-export const stopService = async () => {
+const stopService = async () => {
     if (servicePromise) {
         const service = await servicePromise;
         service.stop();

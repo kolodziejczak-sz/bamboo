@@ -1,14 +1,11 @@
+import { setConfig, Config } from './config';
 import { buildDependencies } from './dependencies';
-import { createServer } from './server';
-import { getConfig, setConfig } from './config';
+import { createHttpServer } from './httpServer';
+import { createWatcher } from './watcher';
 
-export const start = (configDraft) => {
+export const start = async (configDraft: Partial<Config>) => {
     setConfig(configDraft);
-
-    const { port } = getConfig();
-    const httpServer = createServer();
-
-    buildDependencies().then(() => {
-        httpServer.listen(port);
-    });
+    await buildDependencies();
+    const { notifyBrowser } = await createHttpServer();
+    await createWatcher(notifyBrowser);
 };

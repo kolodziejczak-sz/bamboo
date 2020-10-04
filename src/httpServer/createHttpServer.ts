@@ -1,27 +1,30 @@
 import http, { IncomingMessage, ServerResponse } from 'http';
 import { getConfig } from '../config';
 import { onDestroy } from '../utils';
-import { getRequestPath } from './utils';
+import { getRequestPath } from './helpers';
 import { handleFileRequest } from './handleFileRequest';
-import { handleEventSourceRequest } from './handleEventSourceRequest';
+import * as sse from './serverSentEvents';
 
-export const createServer = () => {
-    const { eventSourcePath } = getConfig();
+export const createHttpServer = () => {
+    const { port, eventSourcePath } = getConfig();
 
     const httpServer = http.createServer(
         async (req: IncomingMessage, res: ServerResponse) => {
-            const path = getRequestPath(req);
-            const isSseReq = eventSourcePath === path;
+            const requestPath = getRequestPath(req);
+            const isSseReq = eventSourcePath === requestPath;
 
             if (isSseReq) {
-                handleEventSourceRequest(req, res);
+                sse.accept(req, res);
             } else {
                 handleFileRequest(req, res);
             }
         }
     );
 
+    httpServer.listen(port);
     onDestroy(() => httpServer.close());
 
-    return httpServer;
+    return {
+        notifyBrowser: () => sse.send(''),
+    };
 };
