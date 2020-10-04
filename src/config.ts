@@ -1,6 +1,7 @@
 import { pathRelative } from './utils';
 
 let config = {
+    additionalTransforms: undefined,
     cwdPath: '',
     dependenciesPath: 'bundled_node_modules',
     entryDirPath: '',
