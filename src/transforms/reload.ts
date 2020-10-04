@@ -2,9 +2,10 @@ import { appendToString } from '../utils';
 import { getConfig } from '../config';
 
 const getScriptToInject = (eventSourcePath) => `
+    <!-- The script below reloads page on file change. --> 
     <script>
         const evtSource = new EventSource('${eventSourcePath}');
-        evtSource.onmessage = (message) => console.log(message);
+        evtSource.onmessage = location.reload;
     </script>
 `;
 
