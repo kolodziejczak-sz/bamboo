@@ -1,6 +1,8 @@
 import { startService, Service, TransformOptions, BuildOptions } from 'esbuild';
 import { onDestroy } from './utils';
 
+export { Loader } from 'esbuild';
+
 let servicePromise: Promise<Service> | undefined;
 
 const ensureService = async () => {
