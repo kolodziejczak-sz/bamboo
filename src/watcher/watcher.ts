@@ -3,26 +3,22 @@ import { NODE_MODULES } from '../constants';
 import { getRelativePath } from '../config';
 import { onDestroy } from '../utils';
 
-type WatchHandler = (
-    fileFullPath: string,
-    fileRelativePath: string
-) => Promise<any> | any;
+type WatchHandler = (fileFullPath: string) => Promise<any> | any;
 
 interface WatchOptions {
-    watchDirectory: string;
-    watchExtensions: string[];
-    ignored?: string[];
+    onAdd: WatchHandler;
     onChange: WatchHandler;
     onDelete: WatchHandler;
-    onAdd: WatchHandler;
+    watchDirectory: string;
+    watchExtensions: string[];
 }
 
 export const watch = ({
+    onAdd,
+    onChange,
+    onDelete,
     watchDirectory,
     watchExtensions,
-    onChange,
-    onAdd,
-    onDelete,
 }: WatchOptions) => {
     const ignored = [`**/${NODE_MODULES}/**`];
     const pathsToWatch = watchExtensions.map(
@@ -34,17 +30,7 @@ export const watch = ({
         ignoreInitial: true,
     });
 
-    const withRelativePath = (handler: WatchHandler) => (
-        fileFullPath: string
-    ) => {
-        const fileRelativePath = getRelativePath(fileFullPath);
-        handler(fileFullPath, fileRelativePath);
-    };
-
-    watcher
-        .on('add', withRelativePath(onAdd))
-        .on('change', withRelativePath(onChange))
-        .on('unlink', withRelativePath(onDelete));
+    watcher.on('add', onAdd).on('change', onChange).on('unlink', onDelete);
 
     const stopWatch = () => watcher.close();
 
