@@ -6,8 +6,10 @@
     "scripts": {
         "start": "nodemon --exec npm run dev -e ts",
         "dev": "npm run build",
-        "build": "tsc --project tsconfig.build.json",
-        "e2e": "node ./e2e/setupTests.js"
+        "build": "tsc",
+        "test": "npm run test:unit && npm run test:e2e",
+        "test:e2e": "node ./e2e/setupTests.js",
+        "test:unit": "jest"
     },
     "bin": {
         "bamboo": "bin/bamboo"

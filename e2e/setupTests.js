@@ -27,8 +27,9 @@ const runExampleProject = async (configDraft) => {
 };
 
 const exampleProjectConfig = {
-    port: 3000,
     eventSourcePath: '__reload__',
+    dependenciesPath: 'bundled_node_modules',
+    port: 3000,
 };
 
 runExampleProject(exampleProjectConfig).then(() => {
