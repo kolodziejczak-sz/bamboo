@@ -2,7 +2,7 @@ import { pathRelative } from './utils';
 
 let config = {
     additionalTransforms: undefined,
-    cwdPath: '',
+    projectRootPath: '',
     dependenciesPath: 'bundled_node_modules',
     entryDirPath: '',
     eventSourcePath: '__reload__',

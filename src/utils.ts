@@ -4,14 +4,10 @@ import mime from 'mime-types';
 import pathModule from 'path';
 import slash from 'slash';
 
-const normalizeSlashes = (path: string) => slash(path);
-
 export const appendToString = (text: string, subText: string, index: number) =>
     text.slice(0, index) + subText + text.slice(index);
 
 export const createReadStream = (path: string) => fs.createReadStream(path);
-
-export const getCwdPath = () => normalizeSlashes(process.cwd());
 
 export const getFileSize = (path: string) => {
     const { size } = fs.statSync(path);
@@ -24,6 +20,8 @@ export const getMimeType = (ext: string) => {
     }
     return mime.lookup(ext) as string;
 };
+
+export const normalizeSlashes = (path: string) => slash(path);
 
 export const onDestroy = (op: () => void) => exitHook(op);
 

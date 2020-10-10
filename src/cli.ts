@@ -1,13 +1,13 @@
-import { pathResolve, getCwdPath } from './utils';
+import { pathResolve, normalizeSlashes } from './utils';
 import { start } from './index';
 
 export function cli(args: string[]) {
-    const cwdPath = getCwdPath();
+    const projectRootPath = normalizeSlashes(process.cwd());
 
     // TODO: handle more options
 
     start({
-        cwdPath: cwdPath,
-        entryDirPath: pathResolve(cwdPath, 'src'),
+        projectRootPath,
+        entryDirPath: pathResolve(projectRootPath, 'src'),
     });
 }
