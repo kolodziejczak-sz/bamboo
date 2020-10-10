@@ -32,12 +32,11 @@ const stringifyDependency = async (
 };
 
 export const buildDependencies = async () => {
-    const { cwdPath } = getConfig();
+    const { projectRootPath } = getConfig();
 
-    const packageJsonPath = pathJoin(cwdPath, PACKAGE_JSON);
+    const packageJsonPath = pathJoin(projectRootPath, PACKAGE_JSON);
+    const nodeModulesPath = pathJoin(projectRootPath, NODE_MODULES);
     const { dependencies } = getDependencies(packageJsonPath);
-
-    const nodeModulesPath = pathJoin(cwdPath, NODE_MODULES);
 
     for (let depName of dependencies) {
         try {

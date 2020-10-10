@@ -1,0 +1,9 @@
+{
+    "name": "use-case-example",
+    "version": "1.0.0",
+    "description": "use case example",
+    "main": "index.js",
+    "dependencies": {
+        "left-pad": "^1.3.0"
+    }
+}

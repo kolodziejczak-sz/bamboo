@@ -5,7 +5,10 @@ const getScriptToInject = (eventSourcePath) => `
     <!-- The script below reloads page on file change. --> 
     <script>
         const evtSource = new EventSource('${eventSourcePath}');
-        evtSource.onmessage = location.reload;
+        evtSource.onmessage = () => {
+            evtSource.close();
+            location.reload();
+        }
     </script>
 `;
 

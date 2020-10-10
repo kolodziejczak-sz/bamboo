@@ -3,9 +3,7 @@
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "lib": ["ESNext", "dom"],
-        "module": "CommonJS",
-        "moduleResolution": "node",
         "noImplicitAny": false,
-        "types": ["cypress", "./e2e/support/index.d.ts"]
+        "rootDir": "src"
     }
 }
