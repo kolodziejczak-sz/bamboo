@@ -10,6 +10,8 @@ type TransformFunction = (
     textContent: string
 ) => Promise<string> | string;
 
+type TransformsCreatorFunction = (baseTransforms: Transform[]) => Transform[];
+
 interface Transform {
     extensions: string[];
     use: TransformFunction[];
@@ -17,6 +19,7 @@ interface Transform {
 
 let transforms: Transform[] | undefined;
 let extensionsToTransform: string[] | undefined;
+const identity = (arg: any) => arg;
 
 const baseTransforms: Transform[] = [
     {
@@ -29,14 +32,8 @@ const baseTransforms: Transform[] = [
     },
 ];
 
-export const setupTransforms = (additionalTransforms: Transform[] = []) => {
-    transforms = [...baseTransforms, ...additionalTransforms];
-    extensionsToTransform = undefined;
-};
-
-const getTransforms = () => {
-    if (!transforms) setupTransforms();
-    return transforms;
+export const getTransforms = () => {
+    return transforms || [];
 };
 
 export const getExtensionsToTransform = () => {
@@ -52,6 +49,13 @@ export const getExtensionsToTransform = () => {
     }
 
     return extensionsToTransform;
+};
+
+export const setupTransforms = (
+    transformsCreatorFunction: TransformsCreatorFunction = identity
+) => {
+    transforms = transformsCreatorFunction(baseTransforms);
+    extensionsToTransform = undefined;
 };
 
 const runTransforms = async (sourceFilePath: string, textContent: string) => {

@@ -7,10 +7,8 @@ import { createWatcher } from './watcher';
 export const start = async (configDraft: Partial<Config>) => {
     setConfig(configDraft);
 
-    const { additionalTransforms } = getConfig();
-    if (additionalTransforms) {
-        setupTransforms(additionalTransforms);
-    }
+    const { transformsCreatorFunction } = getConfig();
+    setupTransforms(transformsCreatorFunction);
 
     await buildDependencies();
     const { notifyBrowser } = await createHttpServer();
