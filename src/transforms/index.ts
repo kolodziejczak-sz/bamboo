@@ -2,7 +2,7 @@ import { pathExtension, scriptExtensions, readFileAsText } from '../utils';
 import { getRelativePath } from '../config';
 import { transformBabel } from './babel';
 import { transformEsImports } from './esImports';
-import { transformHtmlScriptImports } from './typeModule';
+import { transformHtmlScriptImports } from './htmlScriptImports';
 import { injectReloadScript } from './reload';
 
 type TransformFunction = (

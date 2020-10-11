@@ -10,7 +10,6 @@ export const transformHtmlScriptImports = async (
         (fullMatch: string, attrs: string, innerCode: string) => {
             const parsedAttrs = attrs.trim().replace(typeAttrRegex, '');
             const newAttrs = ['type="module"', parsedAttrs].join(' ');
-
             return `<script ${newAttrs}>${innerCode}</script>`;
         }
     );
