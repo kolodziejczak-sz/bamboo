@@ -19,8 +19,8 @@ export const injectReloadScript = async (
     const { eventSourcePath } = getConfig();
     const scriptToInject = getScriptToInject(eventSourcePath);
     const targetIndex =
-        textContent.indexOf('</body>') ||
-        textContent.indexOf('</html>') ||
+        Math.max(0, textContent.indexOf('</body>')) ||
+        Math.max(0, textContent.indexOf('</html>')) ||
         textContent.length;
 
     return appendToString(textContent, scriptToInject, targetIndex);
