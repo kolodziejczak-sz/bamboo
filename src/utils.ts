@@ -3,9 +3,12 @@ import fs from 'fs-extra';
 import mime from 'mime-types';
 import pathModule from 'path';
 import slash from 'slash';
+import { TextDecoder } from 'util';
 
 export const appendToString = (text: string, subText: string, index: number) =>
     text.slice(0, index) + subText + text.slice(index);
+
+export const createTextDecoder = () => new TextDecoder('utf-8');
 
 export const createReadStream = (path: string) => fs.createReadStream(path);
 

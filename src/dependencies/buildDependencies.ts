@@ -2,11 +2,11 @@ import { cache } from '../cache';
 import { getConfig, getDependencyPath } from '../config';
 import { PACKAGE_JSON, NODE_MODULES, DEFAULT_SCRIPT_FILE } from '../constants';
 import { logError } from '../logger';
-import { pathJoin, parsePackageJson } from '../utils';
+import { createTextDecoder, pathJoin, parsePackageJson } from '../utils';
 import { getDependencies, getBuiltInModules } from './dependencies';
 import { build } from '../esbuild';
 
-const decoder = new TextDecoder('utf-8');
+const decoder = createTextDecoder();
 
 const stringifyDependency = async (
     depsDirPath: string,
