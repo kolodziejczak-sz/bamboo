@@ -37,8 +37,9 @@ export const getDependencies = (packageJsonPath?: string) => {
 };
 
 export const isDependency = (depName: string) => {
-    const { dependencies } = getDependencies();
-    return dependencies.includes(depName);
+    const depsByCategory = getDependencies();
+
+    return Boolean(depsByCategory?.dependencies.includes(depName));
 };
 
 export const getBuiltInModules = () => {
