@@ -1,7 +1,7 @@
 import { transformBabel } from '../babel';
-import { transform } from '../../esbuild';
+import { transform } from '../../../esbuild';
 
-jest.mock('../../esbuild', () => ({
+jest.mock('../../../esbuild', () => ({
     transform: jest.fn(() => ({ js: '' })),
 }));
 

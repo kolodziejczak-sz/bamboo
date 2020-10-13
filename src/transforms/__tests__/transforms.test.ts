@@ -1,25 +1,20 @@
 import { setConfig } from '../../config';
-import * as utils from '../../utils';
 import {
     getExtensionsToTransform,
     getTransforms,
     setupTransforms,
-    transformFile,
-} from '../index';
+    runTransforms,
+} from '../transforms';
 
-describe('transforms runner', () => {
+describe('transforms', () => {
     const resetTransformModule = () => setupTransforms(() => undefined);
     beforeEach(resetTransformModule);
     afterEach(resetTransformModule);
 
     const entryDirPath = 'root/project/';
     const fileRelativePath = 'src/main.html';
-    const fileFullPath = `${entryDirPath}${fileRelativePath}`;
     const fileContent = `<html></html>`;
     const transformedFileContent = `any`;
-    Object.assign(utils, {
-        readFileAsText: () => fileContent,
-    });
     const firstCustomTransform = jest.fn(() => transformedFileContent);
     const secondCustomTransform = jest.fn(() => transformedFileContent);
     const customTransforms = [
@@ -34,7 +29,9 @@ describe('transforms runner', () => {
     it('should run all transforms over the file', async () => {
         expect(getTransforms()).toEqual([]);
         expect(getExtensionsToTransform()).toEqual([]);
-        expect(await transformFile(fileFullPath)).toEqual(fileContent);
+        expect(await runTransforms(fileRelativePath, fileContent)).toEqual(
+            fileContent
+        );
         expect(firstCustomTransform).toBeCalledTimes(0);
         expect(secondCustomTransform).toBeCalledTimes(0);
 
@@ -47,7 +44,7 @@ describe('transforms runner', () => {
         expect(getExtensionsToTransform()).toEqual(
             customTransforms[0].extensions
         );
-        expect(await transformFile(fileFullPath)).toEqual(
+        expect(await runTransforms(fileRelativePath, fileContent)).toEqual(
             transformedFileContent
         );
         expect(firstCustomTransform).toBeCalledTimes(1);

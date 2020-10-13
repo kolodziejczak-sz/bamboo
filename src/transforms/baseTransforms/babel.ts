@@ -1,5 +1,5 @@
-import { transform, Loader } from '../esbuild';
-import { pathExtension } from '../utils';
+import { transform, Loader } from '../../esbuild';
+import { pathExtension } from '../../utils';
 
 export const transformBabel = async (
     sourceFilePath: string,

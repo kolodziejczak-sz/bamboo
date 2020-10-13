@@ -1,5 +1,5 @@
-import { appendToString } from '../utils';
-import { getConfig } from '../config';
+import { appendToString } from '../../utils';
+import { getConfig } from '../../config';
 
 const getScriptToInject = (eventSourcePath) => `
     <!-- The script below reloads page on file change. --> 

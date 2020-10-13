@@ -1,6 +1,6 @@
+import { setConfig } from '../../../config';
+import * as utils from '../../../utils';
 import { transformEsImports } from '../esImports';
-import { setConfig } from '../../config';
-import * as utils from '../../utils';
 
 describe('transformEsImports', () => {
     const entryDirPath = 'root/project/';
