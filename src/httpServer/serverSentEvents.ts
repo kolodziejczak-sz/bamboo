@@ -1,20 +1,28 @@
 import { IncomingMessage, ServerResponse } from 'http';
+import { onRequestClose, write } from './helpers';
 
 const subscribers = new Set<ServerResponse>();
 
-export const accept = (req: IncomingMessage, res: ServerResponse) => {
-    res.writeHead(200, {
-        Connection: 'keep-alive',
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
+export const acceptEventSource = (req: IncomingMessage, res: ServerResponse) => {
+    write({
+        res,
+        statusCode: 200,
+        headers: {
+            Connection: 'keep-alive',
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+        }
     });
 
     subscribers.add(res);
-    req.on('close', () => subscribers.delete(res));
+    onRequestClose(req, () => subscribers.delete(res));
 };
 
-export const send = (data: any) => {
+export const sendEvent = (data: Object) => {
     subscribers.forEach((subscriber) => {
-        subscriber.write(`data:${JSON.stringify(data)}\n\n`);
+        write({
+            res: subscriber,
+            partialChunk: `data:${JSON.stringify(data)}\n\n`
+        });
     });
 };

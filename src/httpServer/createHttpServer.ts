@@ -3,7 +3,7 @@ import { getConfig } from '../config';
 import { onDestroy } from '../utils';
 import { getRequestPath } from './helpers';
 import { handleFileRequest } from './handleFileRequest';
-import * as sse from './serverSentEvents';
+import { acceptEventSource, sendEvent } from './serverSentEvents';
 
 export const createHttpServer = () => {
     const { port, eventSourcePath } = getConfig();
@@ -14,7 +14,7 @@ export const createHttpServer = () => {
             const isSseReq = eventSourcePath === requestPath;
 
             if (isSseReq) {
-                sse.accept(req, res);
+                acceptEventSource(req, res);
             } else {
                 handleFileRequest(req, res);
             }
@@ -25,6 +25,7 @@ export const createHttpServer = () => {
     onDestroy(() => httpServer.close());
 
     return {
-        notifyBrowser: () => sse.send(''),
+        httpServer,
+        notifyBrowser: () => sendEvent(''),
     };
 };
