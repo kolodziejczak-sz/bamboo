@@ -1,6 +1,11 @@
 import { setConfig } from '../../../config';
-import * as utils from '../../../utils';
+import { pathExists } from '../../../utils';
 import { transformEsImports } from '../esImports';
+
+jest.mock('../../../utils', () => ({
+    ...jest.requireActual('../../../utils'),
+    pathExists: jest.fn(() => false),
+}));
 
 describe('transformEsImports', () => {
     const entryDirPath = 'root/project/';
@@ -11,9 +16,9 @@ describe('transformEsImports', () => {
     ];
 
     setConfig({ entryDirPath });
-    Object.assign(utils, {
-        pathExists: (path: string) => existingPaths.includes(path),
-    });
+    (pathExists as jest.Mock).mockImplementation((path: string) =>
+        existingPaths.includes(path)
+    );
 
     it('the transformation result should match a snapshot', async () => {
         const sourceFilePath = 'index.ts';

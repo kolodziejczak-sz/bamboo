@@ -13,7 +13,6 @@ jest.mock('../watch', () => ({
 }));
 
 jest.mock('../../transforms', () => ({
-    __esModule: true,
     ...jest.requireActual('../../transforms'),
     transformFile: jest.fn(() => 'transformed-file'),
 }));

@@ -1,7 +1,17 @@
 import { setConfig } from '../../config';
-import * as utils from '../../utils';
-import * as transforms from '../transforms';
+import { runTransforms } from '../transforms';
+import { readFileAsText } from '../../utils';
 import { transformFile } from '../transformFile';
+
+jest.mock('../../utils', () => ({
+    ...jest.requireActual('../../utils'),
+    readFileAsText: jest.fn(() => {}),
+}));
+
+jest.mock('../transforms', () => ({
+    ...jest.requireActual('../transforms'),
+    runTransforms: jest.fn(() => {}),
+}));
 
 describe('transformFile', () => {
     it('should call runTransforms fn with relativePath', async () => {
@@ -10,8 +20,8 @@ describe('transformFile', () => {
         const fileFullPath = `${entryDirPath}${fileRelativePath}`;
         const fileTextContent = `<html></html>`;
         const mockedRunTransforms = jest.fn(() => 'any');
-        Object.assign(utils, { readFileAsText: () => fileTextContent });
-        Object.assign(transforms, { runTransforms: mockedRunTransforms });
+        (readFileAsText as jest.Mock).mockImplementation(() => fileTextContent);
+        (runTransforms as jest.Mock).mockImplementation(mockedRunTransforms);
         setConfig({ entryDirPath });
 
         await transformFile(fileFullPath);

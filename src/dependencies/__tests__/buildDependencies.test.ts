@@ -1,41 +1,38 @@
-import * as buildDependencies from '../buildDependencies';
-import * as dependencies from '../dependencies';
-import * as cache from '../../cache';
+import { cache } from '../../cache';
 import { setConfig } from '../../config';
+import { buildDependencies } from '../buildDependencies';
+import { getDependencies, stringifyDependency } from '../dependencies';
 
-const mockedCache = { set: jest.fn(() => {}) };
-const mockedDependencies = ['foo', 'bar'];
-const dependenciesCount = mockedDependencies.length;
-const mockedBuiltInModules = [];
-const mockedStringifyDependency = jest.fn(
-    (depName) => `stringified ${depName}`
-);
-
-Object.assign(cache, {
-    cache: mockedCache,
-});
-Object.assign(dependencies, {
-    getDependencies: () => ({ dependencies: mockedDependencies }),
-    getBuiltInModules: () => mockedBuiltInModules,
-    stringifyDependency: mockedStringifyDependency,
-});
+jest.mock('../dependencies', () => ({
+    __esModule: true,
+    ...jest.requireActual('../dependencies'),
+    getDependencies: jest.fn(),
+    stringifyDependency: jest.fn((depPath) => `stringified ${depPath}`),
+}));
 
 describe('buildDependencies', () => {
-    const projectRootPath = 'root/project';
+    setConfig({ projectRootPath: 'root/project' });
 
     beforeAll(() => {
-        setConfig({ projectRootPath });
-        mockedCache.set.mockClear();
+        cache.clear();
+        jest.clearAllMocks();
     });
 
     it('should call stringify dependency and store result in cache', async () => {
-        await buildDependencies.buildDependencies();
+        const mockedDependencies = ['foo', 'bar'];
+        const dependenciesCount = mockedDependencies.length;
+        (getDependencies as jest.Mock).mockImplementation(() => ({
+            dependencies: mockedDependencies,
+        }));
 
-        expect(mockedCache.set).toHaveBeenCalledTimes(dependenciesCount);
-        expect(mockedStringifyDependency).toHaveBeenCalledTimes(
-            dependenciesCount
-        );
-        expect(mockedCache.set.mock.calls).toMatchInlineSnapshot(`
+        expect(cache.size).toBe(0);
+
+        await buildDependencies();
+
+        expect(stringifyDependency).toHaveBeenCalledTimes(dependenciesCount);
+        expect(cache.size).toBe(dependenciesCount);
+
+        expect(Array.from(cache.entries())).toMatchInlineSnapshot(`
             Array [
               Array [
                 "bundled_node_modules/foo.js",
@@ -44,16 +41,6 @@ describe('buildDependencies', () => {
               Array [
                 "bundled_node_modules/bar.js",
                 "stringified root/project/node_modules/bar",
-              ],
-            ]
-        `);
-        expect(mockedStringifyDependency.mock.calls).toMatchInlineSnapshot(`
-            Array [
-              Array [
-                "root/project/node_modules/foo",
-              ],
-              Array [
-                "root/project/node_modules/bar",
               ],
             ]
         `);
