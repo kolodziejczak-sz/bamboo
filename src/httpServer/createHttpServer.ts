@@ -25,6 +25,7 @@ export const createHttpServer = () => {
     onDestroy(() => httpServer.close());
 
     return {
+        httpServer,
         notifyBrowser: () => sse.send(''),
     };
 };

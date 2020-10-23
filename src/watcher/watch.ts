@@ -1,6 +1,5 @@
 import chokidar from 'chokidar';
 import { NODE_MODULES } from '../constants';
-import { getRelativePath } from '../config';
 import { onDestroy } from '../utils';
 
 type WatchHandler = (fileFullPath: string) => Promise<any> | any;
@@ -32,9 +31,7 @@ export const watch = ({
 
     watcher.on('add', onAdd).on('change', onChange).on('unlink', onDelete);
 
-    const stopWatch = () => watcher.close();
+    onDestroy(() => watcher.close());
 
-    onDestroy(stopWatch);
-
-    return stopWatch;
+    return watcher;
 };

@@ -1,9 +1,9 @@
 import { cache } from '../cache';
 import { getConfig, getRelativePath } from '../config';
 import { getExtensionsToTransform, transformFile } from '../transforms';
-import { watch } from './watcher';
+import { watch } from './watch';
 
-export const createWatcher = async (callback: Function) => {
+export const createWatcher = (callback: Function) => {
     const { entryDirPath } = getConfig();
     const extensionsToTransform = getExtensionsToTransform();
 
@@ -20,7 +20,7 @@ export const createWatcher = async (callback: Function) => {
         callback();
     };
 
-    watch({
+    return watch({
         watchDirectory: entryDirPath,
         watchExtensions: extensionsToTransform,
         onAdd: onFileChangeCallback,
