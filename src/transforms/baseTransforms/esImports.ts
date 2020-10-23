@@ -1,12 +1,12 @@
-import { isDependency } from '../dependencies';
-import { getConfig, getDependencyPath } from '../config';
+import { isDependency } from '../../dependencies';
+import { getConfig, getDependencyPath } from '../../config';
 import {
     pathExists,
     pathExtension,
     pathRelative,
     pathJoin,
     scriptExtensions,
-} from '../utils';
+} from '../../utils';
 
 const resolveScriptPath = (
     relativeSourceDirPath: string,
