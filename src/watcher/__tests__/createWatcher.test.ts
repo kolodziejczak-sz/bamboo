@@ -1,5 +1,6 @@
 import { cache } from '../../cache';
 import { setConfig } from '../../config';
+import { notifyBrowser } from '../../httpServer';
 import { transformFile, setupTransforms } from '../../transforms';
 import { createWatcher } from '../createWatcher';
 import { watch } from '../watch';
@@ -17,6 +18,10 @@ jest.mock('../../transforms', () => ({
     transformFile: jest.fn(() => 'transformed-file'),
 }));
 
+jest.mock('../../httpServer', () => ({
+    notifyBrowser: jest.fn(),
+}));
+
 describe('watch', () => {
     const entryDirPath = 'root';
     setConfig({ entryDirPath });
@@ -28,7 +33,7 @@ describe('watch', () => {
     });
 
     it('should call the watchFn with correct params', async () => {
-        createWatcher(() => {});
+        createWatcher();
 
         expect(watch).toBeCalledTimes(1);
         expect((watch as jest.Mock).mock.calls).toMatchInlineSnapshot(`
@@ -49,15 +54,14 @@ describe('watch', () => {
         `);
     });
 
-    it('should process a new file and call a callback', async () => {
-        const callback = jest.fn(() => '');
-        const watcher = createWatcher(callback) as any;
+    it('should process a new file and notify the client about it', async () => {
+        const watcher = createWatcher() as any;
 
         const newFilePath = `${entryDirPath}/bar.js`;
         await watcher.onAdd(newFilePath);
 
         expect(transformFile).toBeCalledTimes(1);
-        expect(callback).toBeCalledTimes(1);
+        expect(notifyBrowser).toBeCalledTimes(1);
         expect(Array.from(cache.entries())).toMatchInlineSnapshot(`
             Array [
               Array [
@@ -68,15 +72,14 @@ describe('watch', () => {
         `);
     });
 
-    it('should process a changed file and call a callback', async () => {
-        const callback = jest.fn(() => '');
-        const watcher = createWatcher(callback) as any;
+    it('should process a changed file and notify the client about it', async () => {
+        const watcher = createWatcher() as any;
 
         const changedFilePath = `${entryDirPath}/bar.js`;
         await watcher.onChange(changedFilePath);
 
         expect(transformFile).toBeCalledTimes(1);
-        expect(callback).toBeCalledTimes(1);
+        expect(notifyBrowser).toBeCalledTimes(1);
         expect(Array.from(cache.entries())).toMatchInlineSnapshot(`
             Array [
               Array [
@@ -87,15 +90,14 @@ describe('watch', () => {
         `);
     });
 
-    it('should unstore a deleted file and call a callback', async () => {
+    it('should unstore a deleted file and notify the client about it', async () => {
         const cachedFile = 'foo.js';
         cache.set(cachedFile, 'cached-file');
-        const callback = jest.fn(() => '');
-        const watcher = createWatcher(callback) as any;
+        const watcher = createWatcher() as any;
 
         const deletedFilePath = `${entryDirPath}/${cachedFile}`;
         await watcher.onDelete(deletedFilePath);
-        expect(callback).toBeCalledTimes(1);
+        expect(notifyBrowser).toBeCalledTimes(1);
 
         expect(Array.from(cache.entries())).toMatchInlineSnapshot(`Array []`);
     });

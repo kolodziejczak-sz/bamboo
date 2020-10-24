@@ -29,3 +29,5 @@ export const sendEvent = (data: Object) => {
         });
     });
 };
+
+export const notifyBrowser = () => sendEvent('');

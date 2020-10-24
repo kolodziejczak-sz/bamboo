@@ -24,8 +24,5 @@ export const createHttpServer = () => {
     httpServer.listen(port);
     onDestroy(() => httpServer.close());
 
-    return {
-        httpServer,
-        notifyBrowser: () => sendEvent(''),
-    };
+    return httpServer;
 };

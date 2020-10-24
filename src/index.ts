@@ -8,6 +8,6 @@ export const start = async (configDraft: Partial<Config>) => {
     setConfig(configDraft);
     setupTransforms();
     await buildDependencies();
-    const { notifyBrowser } = await createHttpServer();
-    await createWatcher(notifyBrowser);
+    await createHttpServer();
+    await createWatcher();
 };

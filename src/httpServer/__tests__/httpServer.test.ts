@@ -3,6 +3,7 @@ import { setConfig } from '../../config';
 import { getExtensionsToTransform, transformFile } from '../../transforms';
 import { pathExists } from '../../utils';
 import { createHttpServer } from '../createHttpServer';
+import { notifyBrowser } from '../serverSentEvents';
 import { send, send404, sendFile, sendTextAsFile } from '../helpers';
 import { createMockRes, createMockReq } from './utils';
 
@@ -35,10 +36,7 @@ jest.mock('../helpers', () => ({
 }));
 
 describe('Create http server', () => {
-    const createHttpMockedServer = (): {
-        httpServer;
-        notifyBrowser: () => void;
-    } => createHttpServer();
+    const createHttpMockedServer = () => createHttpServer() as any;
 
     const config = {
         port: 3000,
@@ -52,20 +50,21 @@ describe('Create http server', () => {
     });
 
     it('server initialization', () => {
-        const { httpServer, notifyBrowser } = createHttpMockedServer();
+        const httpServer = createHttpMockedServer();
 
         expect(httpServer.listen).toBeCalledWith(config.port);
-        expect(notifyBrowser).not.toBeFalsy();
     });
 
     it('server sent events', async () => {
-        const { httpServer, notifyBrowser } = createHttpMockedServer();
+        const httpServer = createHttpMockedServer();
         const mockReq = createMockReq(config.eventSourcePath);
         const mockRes = createMockRes();
 
         await httpServer.requestListener(mockReq, mockRes);
+
         notifyBrowser();
 
+        expect(send).toBeCalledTimes(2);
         expect((send as jest.Mock).mock.calls).toMatchInlineSnapshot(`
             Array [
               Array [
@@ -102,7 +101,7 @@ describe('Create http server', () => {
     it('response from cache', async () => {
         const cacheKey = 'xxxx';
         const cacheValue = 'yyyy';
-        const { httpServer } = createHttpMockedServer();
+        const httpServer = createHttpMockedServer();
         const mockReq = createMockReq(cacheKey);
         const mockRes = createMockRes();
         cache.set(cacheKey, cacheValue);
@@ -113,7 +112,7 @@ describe('Create http server', () => {
     });
 
     it('404 as response', async () => {
-        const { httpServer } = createHttpMockedServer();
+        const httpServer = createHttpMockedServer();
         const mockReq = createMockReq('pathWithExtension.mp3');
         const mockRes = createMockRes();
         (pathExists as jest.Mock).mockImplementation(() => false);
@@ -125,7 +124,7 @@ describe('Create http server', () => {
     });
 
     it('file as response', async () => {
-        const { httpServer } = createHttpMockedServer();
+        const httpServer = createHttpMockedServer();
         const fileName = 'file.mp3';
         const mockReq = createMockReq(fileName);
         const mockRes = createMockRes();
@@ -142,7 +141,7 @@ describe('Create http server', () => {
         const supportedExtentsion = '.css';
         const fileName = `file${supportedExtentsion}`;
         const fileContent = 'css file content';
-        const { httpServer } = createHttpMockedServer();
+        const httpServer = createHttpMockedServer();
         const mockReq = createMockReq(fileName);
         const mockRes = createMockRes();
         (getExtensionsToTransform as jest.Mock).mockImplementation(() => [
