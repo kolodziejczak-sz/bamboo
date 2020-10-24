@@ -4,7 +4,7 @@ import { DEFAULT_HTML_FILE } from '../constants';
 import { cache } from '../cache';
 import { getExtensionsToTransform, transformFile } from '../transforms';
 import { pathExtension, pathExists, pathJoin } from '../utils';
-import { getRequestPath, sendTextAsFile, send404, sendFile } from './helpers';
+import { getRequestPath, send404, sendFile, sendTextAsFile } from './helpers';
 
 export const handleFileRequest = async (
     req: IncomingMessage,

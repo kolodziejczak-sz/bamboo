@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse, OutgoingHttpHeaders } from 'http';
 import {
     createReadStream,
     getMimeType,
@@ -6,10 +6,49 @@ import {
     pathExtension,
 } from '../utils';
 
+interface HttpResponseOptions {
+    statusCode?: number;
+    res: ServerResponse;
+    headers?: OutgoingHttpHeaders;
+    chunk?: string;
+    partialChunk?: string;
+}
+
 export const getRequestPath = (req: IncomingMessage) => req.url.slice(1);
 
+export const onRequestClose = (req: IncomingMessage, listener: () => void) =>
+    req.on('close', listener);
+
+export const send = ({
+    res,
+    statusCode,
+    headers,
+    partialChunk,
+    chunk,
+}: HttpResponseOptions) => {
+    const shouldWriteHead = headers !== undefined && statusCode !== undefined;
+    if (shouldWriteHead) {
+        res.writeHead(statusCode, headers);
+    }
+
+    const shouldWrite = partialChunk !== undefined;
+    if (shouldWrite) {
+        res.write(partialChunk);
+    }
+
+    const shouldEnd = chunk !== undefined;
+    if (shouldEnd) {
+        res.end(chunk);
+    }
+};
+
 export const send404 = (res: ServerResponse) => {
-    res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found');
+    send({
+        res,
+        statusCode: 404,
+        headers: { 'Content-Type': 'text/plain' },
+        chunk: 'Not found',
+    });
 };
 
 export const sendTextAsFile = (
@@ -21,11 +60,16 @@ export const sendTextAsFile = (
     const contentType = getMimeType(extension);
     const contentLength = textContent.length;
 
-    res.writeHead(200, {
-        'Content-Type': contentType,
-        'Content-Length': contentLength,
-        'Cache-Control': 'no-cache',
-    }).end(textContent);
+    send({
+        res,
+        statusCode: 200,
+        chunk: textContent,
+        headers: {
+            'Content-Type': contentType,
+            'Content-Length': contentLength,
+            'Cache-Control': 'no-cache',
+        },
+    });
 };
 
 export const sendFile = (res: ServerResponse, filePath: string) => {
@@ -33,10 +77,14 @@ export const sendFile = (res: ServerResponse, filePath: string) => {
     const contentType = getMimeType(extension);
     const contentLength = getFileSize(filePath);
 
-    res.writeHead(200, {
-        'Content-Type': contentType,
-        'Content-Length': contentLength,
-        'Cache-Control': 'no-cache',
+    send({
+        res,
+        statusCode: 200,
+        headers: {
+            'Content-Type': contentType,
+            'Content-Length': contentLength,
+            'Cache-Control': 'no-cache',
+        },
     });
 
     const readStream = createReadStream(filePath);
