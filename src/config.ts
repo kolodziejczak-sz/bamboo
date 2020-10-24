@@ -1,7 +1,7 @@
-import { pathRelative } from './utils';
+import { identity, pathRelative } from './utils';
 
 let config = {
-    transformsCreatorFunction: undefined,
+    transformsCreatorFunction: identity,
     projectRootPath: '',
     dependenciesPath: 'bundled_node_modules',
     entryDirPath: '',

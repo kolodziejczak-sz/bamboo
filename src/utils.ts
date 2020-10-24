@@ -12,6 +12,8 @@ export const createTextDecoder = () => new TextDecoder('utf-8');
 
 export const createReadStream = (path: string) => fs.createReadStream(path);
 
+export const identity = (arg: any) => arg;
+
 export const getFileSize = (path: string) => {
     const { size } = fs.statSync(path);
     return size;

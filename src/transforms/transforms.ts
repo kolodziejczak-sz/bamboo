@@ -1,3 +1,4 @@
+import { getConfig } from '../config';
 import { pathExtension } from '../utils';
 import { baseTransforms } from './baseTransforms';
 
@@ -15,7 +16,6 @@ interface Transform {
 
 let transforms: Transform[] | undefined;
 let extensionsToTransform: string[] | undefined;
-const identity = (arg: any) => arg;
 
 export const getTransforms = () => {
     return transforms || [];
@@ -37,7 +37,8 @@ export const getExtensionsToTransform = () => {
 };
 
 export const setupTransforms = (
-    transformsCreatorFunction: TransformsCreatorFunction = identity
+    transformsCreatorFunction: TransformsCreatorFunction = getConfig()
+        .transformsCreatorFunction
 ) => {
     transforms = transformsCreatorFunction(baseTransforms);
     extensionsToTransform = undefined;

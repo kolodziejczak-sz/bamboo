@@ -39,7 +39,8 @@ const resolveImportPath = (sourceFilePath: string, importPath: string) => {
     const sourceDirPath = pathJoin(sourceFilePath, '..');
     const isDependencyImport = isDependency(importPath);
     if (isDependencyImport) {
-        const depPath = getDependencyPath(importPath);
+        const depName = importPath;
+        const depPath = getDependencyPath(depName);
         const newImportPath = pathRelative(sourceDirPath, depPath);
 
         return newImportPath;
