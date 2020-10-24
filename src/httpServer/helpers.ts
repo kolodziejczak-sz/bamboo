@@ -1,8 +1,8 @@
-import { IncomingMessage, ServerResponse, OutgoingHttpHeaders } from 'http';
+import { IncomingMessage, OutgoingHttpHeaders, ServerResponse } from 'http';
 import {
     createReadStream,
-    getMimeType,
     getFileSize,
+    getMimeType,
     pathExtension,
 } from '../utils';
 
@@ -20,11 +20,11 @@ export const onRequestClose = (req: IncomingMessage, listener: () => void) =>
     req.on('close', listener);
 
 export const send = ({
-    res,
-    statusCode,
+    chunk,
     headers,
     partialChunk,
-    chunk,
+    statusCode,
+    res,
 }: HttpResponseOptions) => {
     const shouldWriteHead = headers !== undefined && statusCode !== undefined;
     if (shouldWriteHead) {

@@ -30,8 +30,6 @@ export const normalizeSlashes = (path: string) => slash(path);
 
 export const onDestroy = (op: () => void) => exitHook(op);
 
-export const parsePackageJson = (path: string) => require(path);
-
 export const pathExists = (path: string) => fs.existsSync(path);
 
 export const pathExtension = (path: string) => pathModule.extname(path);
@@ -45,7 +43,9 @@ export const pathRelative = (from: string, to: string) =>
 export const pathResolve = (...paths: string[]) =>
     normalizeSlashes(pathModule.resolve(...paths));
 
-export const readFileAsText = async (path: string) =>
-    fs.readFile(path, 'utf-8');
+export const parsePackageJson = (path: string) => require(path);
 
 export const scriptExtensions = ['.ts', '.tsx', '.js', '.jsx'];
+
+export const readFileAsText = async (path: string) =>
+    fs.readFile(path, 'utf-8');
