@@ -5,17 +5,13 @@ import { onDestroy } from '../utils';
 type WatchHandler = (fileFullPath: string) => Promise<any> | any;
 
 interface WatchOptions {
-    onAdd: WatchHandler;
-    onChange: WatchHandler;
-    onDelete: WatchHandler;
+    onFilesChange: WatchHandler;
     watchDirectory: string;
     watchExtensions: string[];
 }
 
 export const watch = ({
-    onAdd,
-    onChange,
-    onDelete,
+    onFilesChange,
     watchDirectory,
     watchExtensions,
 }: WatchOptions) => {
@@ -29,7 +25,7 @@ export const watch = ({
         ignoreInitial: true,
     });
 
-    watcher.on('add', onAdd).on('change', onChange).on('unlink', onDelete);
+    watcher.on('change', onFilesChange).on('unlink', onFilesChange);
 
     onDestroy(() => watcher.close());
 

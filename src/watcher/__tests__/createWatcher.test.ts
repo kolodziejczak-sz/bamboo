@@ -1,21 +1,14 @@
 import { cache } from '../../cache';
 import { setConfig } from '../../config';
 import { notifyBrowser } from '../../httpServer';
-import { transformFile, setupTransforms } from '../../transforms';
+import { setupTransforms } from '../../transforms';
 import { createWatcher } from '../createWatcher';
 import { watch } from '../watch';
 
 jest.mock('../watch', () => ({
-    watch: jest.fn(({ onAdd, onChange, onDelete }) => ({
-        onAdd: jest.fn((filePath: string) => onAdd(filePath)),
-        onChange: jest.fn((filePath: string) => onChange(filePath)),
-        onDelete: jest.fn((filePath: string) => onDelete(filePath)),
+    watch: jest.fn(({ onFilesChange }) => ({
+        onFilesChange: jest.fn((filePath: string) => onFilesChange(filePath)),
     })),
-}));
-
-jest.mock('../../transforms', () => ({
-    ...jest.requireActual('../../transforms'),
-    transformFile: jest.fn(() => 'transformed-file'),
 }));
 
 jest.mock('../../httpServer', () => ({
@@ -40,9 +33,7 @@ describe('watch', () => {
             Array [
               Array [
                 Object {
-                  "onAdd": [Function],
-                  "onChange": [Function],
-                  "onDelete": [Function],
+                  "onFilesChange": [Function],
                   "watchDirectory": "root",
                   "watchExtensions": Array [
                     ".js",
@@ -54,51 +45,25 @@ describe('watch', () => {
         `);
     });
 
-    it('should process a new file and notify the client about it', async () => {
+    it('should notify user only when a modified file was cached', async () => {
         const watcher = createWatcher() as any;
+        cache.set('non-empty-cache', 'cached-file');
 
-        const newFilePath = `${entryDirPath}/bar.js`;
-        await watcher.onAdd(newFilePath);
+        const changedFilePath = 'foo.zip';
+        await watcher.onFilesChange(changedFilePath);
 
-        expect(transformFile).toBeCalledTimes(1);
-        expect(notifyBrowser).toBeCalledTimes(1);
-        expect(Array.from(cache.entries())).toMatchInlineSnapshot(`
-            Array [
-              Array [
-                "bar.js",
-                "transformed-file",
-              ],
-            ]
-        `);
+        expect(notifyBrowser).toBeCalledTimes(0);
+        expect(cache.size).toBe(1);
     });
 
-    it('should process a changed file and notify the client about it', async () => {
-        const watcher = createWatcher() as any;
-
-        const changedFilePath = `${entryDirPath}/bar.js`;
-        await watcher.onChange(changedFilePath);
-
-        expect(transformFile).toBeCalledTimes(1);
-        expect(notifyBrowser).toBeCalledTimes(1);
-        expect(Array.from(cache.entries())).toMatchInlineSnapshot(`
-            Array [
-              Array [
-                "bar.js",
-                "transformed-file",
-              ],
-            ]
-        `);
-    });
-
-    it('should unstore a deleted file and notify the client about it', async () => {
+    it('should uncache modified file and notify the client about it', async () => {
         const cachedFile = 'foo.js';
         cache.set(cachedFile, 'cached-file');
         const watcher = createWatcher() as any;
 
-        const deletedFilePath = `${entryDirPath}/${cachedFile}`;
-        await watcher.onDelete(deletedFilePath);
+        const changedFilePath = `${entryDirPath}/${cachedFile}`;
+        await watcher.onFilesChange(changedFilePath);
         expect(notifyBrowser).toBeCalledTimes(1);
-
-        expect(Array.from(cache.entries())).toMatchInlineSnapshot(`Array []`);
+        expect(cache.size).toBe(0);
     });
 });

@@ -12,19 +12,17 @@ jest.mock('chokidar', () => {
 
 describe('watch', () => {
     it('should create chokiddar instance', async () => {
-        const watcherOptions = {
-            onAdd: jest.fn(),
-            onChange: jest.fn(),
-            onDelete: jest.fn(),
+        const onFilesChange = jest.fn();
+
+        const watcher = watch({
+            onFilesChange,
             watchDirectory: 'watchDirectory',
             watchExtensions: ['.ts', '.js'],
-        };
-        const watcher = watch(watcherOptions) as any;
+        }) as any;
 
-        expect(watcher.on).toBeCalledTimes(3);
-        expect(watcher.on).toBeCalledWith('add', watcherOptions.onAdd);
-        expect(watcher.on).toBeCalledWith('change', watcherOptions.onChange);
-        expect(watcher.on).toBeCalledWith('unlink', watcherOptions.onDelete);
+        expect(watcher.on).toBeCalledTimes(2);
+        expect(watcher.on).toBeCalledWith('change', onFilesChange);
+        expect(watcher.on).toBeCalledWith('unlink', onFilesChange);
 
         const chokidar = watcher.watch;
         expect(chokidar).toBeCalledTimes(1);
