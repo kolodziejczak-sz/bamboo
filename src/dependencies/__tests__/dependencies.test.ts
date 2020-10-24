@@ -1,5 +1,5 @@
 import { parsePackageJson } from '../../utils';
-import { build } from '../../esbuild';
+import { bundle } from '../../esbuild';
 import {
     getDependencies,
     isDependency,
@@ -13,9 +13,7 @@ jest.mock('../../utils', () => ({
 
 jest.mock('../../esbuild', () => ({
     ...jest.requireActual('../../esbuild'),
-    build: jest.fn(({ entryPoints }) => ({
-        outputFiles: [{ contents: Uint8Array.from(entryPoints[0]) }],
-    })),
+    bundle: jest.fn(() => 'any'),
 }));
 
 jest.mock('builtin-modules', () => []);
@@ -54,20 +52,11 @@ describe('dependencies', () => {
         const result = await stringifyDependency(packagePath);
 
         expect(typeof result).toEqual('string');
-        expect((build as jest.Mock).mock.calls).toMatchInlineSnapshot(`
+        expect(bundle).toBeCalledTimes(1);
+        expect((bundle as jest.Mock).mock.calls[0]).toMatchInlineSnapshot(`
             Array [
-              Array [
-                Object {
-                  "bundle": true,
-                  "entryPoints": Array [
-                    "node_modules/foo/index.js",
-                  ],
-                  "external": Array [],
-                  "format": "esm",
-                  "minify": true,
-                  "write": false,
-                },
-              ],
+              "node_modules/foo/index.js",
+              Array [],
             ]
         `);
     });

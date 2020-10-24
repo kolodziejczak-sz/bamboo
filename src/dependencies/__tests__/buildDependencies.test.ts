@@ -4,7 +4,6 @@ import { buildDependencies } from '../buildDependencies';
 import { getDependencies, stringifyDependency } from '../dependencies';
 
 jest.mock('../dependencies', () => ({
-    __esModule: true,
     ...jest.requireActual('../dependencies'),
     getDependencies: jest.fn(),
     stringifyDependency: jest.fn((depPath) => `stringified ${depPath}`),
