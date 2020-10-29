@@ -8,11 +8,19 @@ import { TextDecoder } from 'util';
 export const appendToString = (text: string, subText: string, index: number) =>
     text.slice(0, index) + subText + text.slice(index);
 
+export const compactObj = <T>(obj: T): Partial<T> => {
+    return Object.fromEntries(
+        Object.entries(obj).filter(([, v]) => v)
+    ) as Partial<T>;
+};
+
 export const createTextDecoder = () => new TextDecoder('utf-8');
 
 export const createReadStream = (path: string) => fs.createReadStream(path);
 
 export const identity = (arg: any) => arg;
+
+export const getCwdPath = () => normalizeSlashes(process.cwd());
 
 export const getFileSize = (path: string) => {
     const { size } = fs.statSync(path);

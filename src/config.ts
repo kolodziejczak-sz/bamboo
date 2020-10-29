@@ -1,12 +1,12 @@
-import { identity, pathRelative } from './utils';
+import { compactObj, getCwdPath, identity, pathRelative } from './utils';
 
 let config = {
-    transformsCreatorFunction: identity,
-    projectRootPath: '',
     dependenciesPath: 'bundled_node_modules',
-    entryDirPath: '',
+    entryDirPath: getCwdPath(),
     eventSourcePath: '__reload__',
     port: 3000,
+    projectRootPath: getCwdPath(),
+    transformsCreatorFunction: identity,
 };
 
 export type Config = typeof config;
@@ -14,9 +14,11 @@ export type Config = typeof config;
 export const getConfig = () => config;
 
 export const setConfig = (update: Partial<typeof config>) => {
+    const compactUpdate = compactObj(update);
+
     config = {
         ...config,
-        ...update,
+        ...compactUpdate,
     };
 };
 

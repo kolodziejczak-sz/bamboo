@@ -2,18 +2,11 @@ const { open: openCypress } = require('cypress');
 const { exec } = require('child_process');
 const path = require('path');
 
-const runExampleProject = async (configDraft) => {
+const runExampleProject = async (port) => {
     const cwdPath = process.cwd();
-    const startExampleProjectScriptPath = path.join(
-        cwdPath,
-        './e2e/scripts/startExampleProject.js'
-    );
+    const exampleProjectPath = path.join(cwdPath, './e2e/exampleProject');
 
-    const argsString = Object.entries(configDraft)
-        .map(([key, value]) => `${key}=${value}`)
-        .join(' ');
-
-    const command = `node ${startExampleProjectScriptPath} ${argsString}`;
+    const command = `bamboo -r ${exampleProjectPath} -d src -p ${port}`;
     const childProcess = exec(command, (error, stdout, stderr) => {
         if (error) {
             console.error(`exec error: ${error}`);
@@ -26,17 +19,13 @@ const runExampleProject = async (configDraft) => {
     return () => childProcess.kill();
 };
 
-const exampleProjectConfig = {
-    eventSourcePath: '__reload__',
-    dependenciesPath: 'bundled_node_modules',
-    port: 3000,
-};
+const exampleProjectPort = 3000;
 
-runExampleProject(exampleProjectConfig).then(() => {
+runExampleProject(exampleProjectPort).then(() => {
     openCypress({
         project: './e2e',
         config: {
-            baseUrl: `http://localhost:${exampleProjectConfig.port}/`,
+            baseUrl: `http://localhost:${exampleProjectPort}/`,
             experimentalNetworkStubbing: true,
             fixturesFolder: './fixtures',
             integrationFolder: './specs',
