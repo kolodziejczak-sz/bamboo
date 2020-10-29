@@ -13,10 +13,6 @@ describe('transformBabel', () => {
         await transformBabel(sourceFilePath, textContent);
 
         expect(transform).toBeCalledTimes(1);
-        expect(transform).toBeCalledWith(textContent, {
-            loader: 'ts',
-            sourcefile: sourceFilePath,
-            sourcemap: 'inline',
-        });
+        expect(transform).toBeCalledWith(sourceFilePath, textContent);
     });
 });

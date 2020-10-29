@@ -1,7 +1,6 @@
-import { startService, Service, TransformOptions } from 'esbuild';
-import { createTextDecoder, onDestroy } from './utils';
-
-export { Loader } from 'esbuild';
+import { Loader, startService, Service } from 'esbuild';
+import { getConfig } from './config';
+import { createTextDecoder, onDestroy, pathExtension } from './utils';
 
 let servicePromise: Promise<Service> | undefined;
 const decoder = createTextDecoder();
@@ -21,16 +20,28 @@ const stopService = async () => {
     }
 };
 
-export const transform = async (input: string, options: TransformOptions) => {
+export const transform = async (sourceFile: string, textContent: string) => {
+    const { transformOptions: customTransformOptions } = getConfig();
+    const loader = pathExtension(sourceFile).slice(1) as Loader;
     const service = await ensureService();
-    return await service.transform(input, options);
+
+    const { js: outputString } = await service.transform(textContent, {
+        loader,
+        sourcefile: sourceFile,
+        sourcemap: 'inline',
+        ...customTransformOptions,
+    });
+
+    return outputString;
 };
 
 export const bundle = async (
     entryPointPath: string,
     external: string[]
 ): Promise<string> => {
+    const { buildOptions: custombuildOptions } = getConfig();
     const { build } = await ensureService();
+
     const { outputFiles } = await build({
         entryPoints: [entryPointPath],
         write: false,
@@ -38,6 +49,7 @@ export const bundle = async (
         bundle: true,
         format: 'esm',
         external,
+        ...custombuildOptions,
     });
     const uint8ArrayContent = outputFiles[0].contents;
     const outputString = decoder.decode(uint8ArrayContent);

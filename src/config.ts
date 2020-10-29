@@ -1,11 +1,13 @@
 import { compactObj, getCwdPath, identity, pathRelative } from './utils';
 
 let config = {
+    buildOptions: {},
     dependenciesPath: 'bundled_node_modules',
     entryDirPath: getCwdPath(),
     eventSourcePath: '__reload__',
     port: 3000,
     projectRootPath: getCwdPath(),
+    transformOptions: {},
     transformsCreatorFunction: identity,
 };
 

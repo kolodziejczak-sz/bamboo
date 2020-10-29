@@ -1,16 +1,10 @@
-import { transform, Loader } from '../../esbuild';
-import { pathExtension } from '../../utils';
+import { transform } from '../../esbuild';
 
 export const transformBabel = async (
     sourceFilePath: string,
     textContent: string
 ) => {
-    const loader = pathExtension(sourceFilePath).slice(1) as Loader;
-    const { js } = await transform(textContent, {
-        loader,
-        sourcefile: sourceFilePath,
-        sourcemap: 'inline',
-    });
+    const transformedTextContent = await transform(sourceFilePath, textContent);
 
-    return js;
+    return transformedTextContent;
 };
