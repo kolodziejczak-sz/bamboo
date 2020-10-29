@@ -39,6 +39,8 @@ describe('Create http server', () => {
     const createHttpMockedServer = () => createHttpServer() as any;
 
     const config = {
+        projectRootPath: '',
+        entryDirPath: '',
         port: 3000,
         eventSourcePath: 'sse',
     };
