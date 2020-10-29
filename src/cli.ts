@@ -1,7 +1,7 @@
 import { program } from 'commander';
 import { Config } from './config';
-import { getCwdPath, pathJoin } from './utils';
 import { start } from './start';
+import { getCwdPath, pathJoin } from './utils';
 
 program
     .option(
@@ -15,20 +15,20 @@ program
     .option('-p, --port <number>', 'the port for a http server');
 
 export function cli(args: string[]) {
-    const { root: typedRoot, dir: typedDir, port: typedPort } = program.parse(
+    const { dir: typedDir, port: typedPort, root: typedRoot } = program.parse(
         args
     );
 
+    const port = typedPort ? Number(typedPort) : undefined;
     const projectRootPath = typedRoot || getCwdPath();
     const entryDirPath = typedDir
         ? pathJoin(projectRootPath, typedDir)
         : undefined;
-    const port = typedPort ? Number(typedPort) : undefined;
 
     const configDraft = {
-        projectRootPath,
         entryDirPath,
         port,
+        projectRootPath,
     } as Partial<Config>;
 
     start(configDraft);
