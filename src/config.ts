@@ -1,14 +1,16 @@
+import { BuildOptions, TransformOptions } from './esbuild';
+import { TransformsCreatorFunction } from './transforms';
 import { compactObj, getCwdPath, identity, pathRelative } from './utils';
 
 let config = {
-    buildOptions: {},
+    buildOptions: {} as BuildOptions,
     dependenciesPath: 'bundled_node_modules',
     entryDirPath: getCwdPath(),
     eventSourcePath: '__reload__',
     port: 3000,
     projectRootPath: getCwdPath(),
-    transformOptions: {},
-    transformsCreatorFunction: identity,
+    transformOptions: {} as TransformOptions,
+    transformsCreatorFunction: identity as TransformsCreatorFunction,
 };
 
 export type Config = typeof config;

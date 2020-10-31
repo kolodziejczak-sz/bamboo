@@ -2,6 +2,8 @@ import { Loader, startService, Service } from 'esbuild';
 import { getConfig } from './config';
 import { createTextDecoder, onDestroy, pathExtension } from './utils';
 
+export { BuildOptions, TransformOptions } from 'esbuild';
+
 let servicePromise: Promise<Service> | undefined;
 const decoder = createTextDecoder();
 

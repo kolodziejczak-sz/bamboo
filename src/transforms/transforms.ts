@@ -7,12 +7,14 @@ type TransformFunction = (
     textContent: string
 ) => Promise<string> | string;
 
-type TransformsCreatorFunction = (baseTransforms: Transform[]) => Transform[];
-
 interface Transform {
     extensions: string[];
     use: TransformFunction[];
 }
+
+export type TransformsCreatorFunction = (
+    baseTransforms: Transform[]
+) => Transform[];
 
 let transforms: Transform[] | undefined;
 let extensionsToTransform: string[] | undefined;

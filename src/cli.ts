@@ -14,7 +14,7 @@ program
     )
     .option('-p, --port <number>', 'the port for a http server');
 
-export function cli(args: string[]) {
+export const cli = (args: string[]) => {
     const { dir: typedDir, port: typedPort, root: typedRoot } = program.parse(
         args
     );
@@ -32,4 +32,4 @@ export function cli(args: string[]) {
     } as Partial<Config>;
 
     start(configDraft);
-}
+};
