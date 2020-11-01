@@ -1,13 +1,14 @@
 {
     "compilerOptions": {
-        "outDir": "dist",
-        "target": "ES5",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
+        "declaration": true,
         "lib": ["ESNext", "dom"],
         "module": "CommonJS",
         "moduleResolution": "node",
         "noImplicitAny": false,
+        "outDir": "dist",
+        "target": "ES5",
     },
-    "exclude": ["e2e/**"]
+    "exclude": ["e2e/**", "**/__tests__/**"]
 }

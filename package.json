@@ -3,8 +3,9 @@
     "version": "1.0.0",
     "description": "Simple esm dev server",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "start": "nodemon --exec npm run dev -e ts",
+        "start": "nodemon --watch src --exec npm run dev",
         "dev": "npm run build",
         "build": "tsc",
         "test": "npm run unitTests && npm run e2eTests",
