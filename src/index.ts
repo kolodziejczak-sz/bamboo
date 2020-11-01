@@ -1,3 +1,1 @@
-import { start } from './start';
-
-export { start };
+export { start } from './start';
