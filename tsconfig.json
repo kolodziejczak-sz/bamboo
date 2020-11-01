@@ -10,5 +10,5 @@
         "outDir": "dist",
         "target": "ES5",
     },
-    "exclude": ["e2e/**", "**/__tests__/**"]
+    "exclude": ["dist/**", "e2e/**", "**/__tests__/**"]
 }

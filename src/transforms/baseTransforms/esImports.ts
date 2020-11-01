@@ -3,8 +3,8 @@ import { getConfig, getDependencyPath } from '../../config';
 import {
     pathExists,
     pathExtension,
-    pathRelative,
     pathJoin,
+    pathRelative,
     scriptExtensions,
 } from '../../utils';
 
