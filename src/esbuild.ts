@@ -22,8 +22,11 @@ const stopService = async () => {
     }
 };
 
-export const transform = async (sourceFile: string, textContent: string) => {
-    const { transformOptions: customTransformOptions } = getConfig();
+export const transform = async (
+    sourceFile: string,
+    textContent: string,
+    customTransformOptions = getConfig().transformOptions
+) => {
     const loader = pathExtension(sourceFile).slice(1) as Loader;
     const service = await ensureService();
 
@@ -39,9 +42,9 @@ export const transform = async (sourceFile: string, textContent: string) => {
 
 export const bundle = async (
     entryPointPath: string,
-    external: string[]
+    external: string[],
+    customBuildOptions = getConfig().buildOptions
 ): Promise<string> => {
-    const { buildOptions: custombuildOptions } = getConfig();
     const { build } = await ensureService();
 
     const { outputFiles } = await build({
@@ -51,7 +54,7 @@ export const bundle = async (
         bundle: true,
         format: 'esm',
         external,
-        ...custombuildOptions,
+        ...customBuildOptions,
     });
     const uint8ArrayContent = outputFiles[0].contents;
     const outputString = decoder.decode(uint8ArrayContent);
